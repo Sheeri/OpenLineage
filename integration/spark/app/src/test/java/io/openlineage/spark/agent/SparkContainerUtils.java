@@ -43,6 +43,21 @@ public class SparkContainerUtils {
             .withExposedPorts(5432);
   }
 
+  static PostgreSQLContainer<?> makeMetastoreContainer(Network network) {
+    String basePath = "src/test/resources/metastore_psql/";
+    return new PostgreSQLContainer<>(DockerImageName.parse("postgres:13.4-bullseye"))
+        .withNetwork(network)
+        .withNetworkAliases("metastore")
+        .withUsername("admin")
+        .withPassword("password")
+        .withDatabaseName("test")
+        .withFileSystemBind(basePath + "init-db.sh", "/docker-entrypoint-initdb.d/init-db.sh")
+        .withFileSystemBind(basePath + "create-databases.sql", "/create-databases.sql")
+        .withFileSystemBind(basePath + "metastore-2.3.0.sql", "/metastore-2.3.0.sql")
+        .withFileSystemBind(basePath + "metastore-3.1.0.sql", "/metastore-3.1.0.sql")
+        .withExposedPorts(5432);
+  }
+
   private static GenericContainer<?> makePysparkContainer(
       Network network,
       String waitMessage,

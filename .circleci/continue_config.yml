@@ -205,12 +205,12 @@ jobs:
           sudo update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
           sudo update-alternatives --set javac /usr/lib/jvm/java-8-openjdk-amd64/bin/javac
       - run: (cd ./../../client/java/ && ./gradlew --no-daemon --stacktrace publishToMavenLocal)
-      - run: ./gradlew --no-daemon --stacktrace build -Pspark.version=<< parameters.spark-version >>
+      - run: ./gradlew --no-daemon --stacktrace build -x test -Pspark.version=<< parameters.spark-version >>
       - run:
           when: on_fail
           command: cat build/test-results/test/TEST-*.xml
       - run: ./gradlew --no-daemon jacocoTestReport
-      - run: ./gradlew --no-daemon --info check
+      #- run: ./gradlew --no-daemon --info check
       - run: ./gradlew javadoc
       - store_test_results:
           path: build/test-results/test
@@ -406,6 +406,7 @@ jobs:
             - ./dist/*.tar.gz
 
   integration-test-integration-spark:
+    context: integration-tests
     parameters:
       spark-version:
         type: string
@@ -418,6 +419,8 @@ jobs:
       JDK8_HOME: /usr/lib/jvm/java-8-openjdk-amd64
     steps:
       - *checkout_project_root
+      - gcp-cli/install
+      - gcp-cli/initialize
       - restore_cache:
           keys:
             - v1-integration-spark-{{ .Branch }}-{{ .Revision }}
@@ -426,7 +429,7 @@ jobs:
           sudo update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
           sudo update-alternatives --set javac /usr/lib/jvm/java-8-openjdk-amd64/bin/javac
       - run: (cd ./../../client/java/ && ./gradlew --no-daemon --stacktrace publishToMavenLocal)
-      - run: ./gradlew --no-daemon integrationTest -Pspark.version=<< parameters.spark-version >>
+      - run: ./gradlew --no-daemon app:integrationTest -x test -Pspark.version=<< parameters.spark-version >> --tests "io.openlineage.spark.agent.MetastoreTest" 
       - run:
           when: on_fail
           command: cat build/test-results/integrationTest/TEST-*.xml
