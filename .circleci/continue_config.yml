@@ -406,7 +406,6 @@ jobs:
             - ./dist/*.tar.gz
 
   integration-test-integration-spark:
-    context: integration-tests
     parameters:
       spark-version:
         type: string
