@@ -4,6 +4,7 @@
 | ------------ | ------------ |
 | [Astronomer](https://www.astronomer.io/) | Integrations, clients, spec, documentation, developer and user support, community management, talks |
 | [Atlan](https://atlan.com/) | Contributions to Airflow integration, Python client and documentation |
+| [Collibra](https://www.collibra.com/) | Designs for static/design lineage, registry planning, documentation, meetups, partnerships, promotion |
 
 For pointers on getting started as a contributor, see the [OpenLineage Contributing Guide](CONTRIBUTING.md).
 
